@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: sqluser
+      POSTGRES_PASSWORD: manu7121998
+      PGDATA: /data/postgres
+    volumes:
+       - postgres-db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      #- "67:67/udp"  # Required only for using Pi-hole as a DHCP server
+      - "80:80/tcp" #pihole admin dashboard
+    environment:
+      TZ: "Asia/Kolkata" #add timezone here
+      WEBPASSWORD: "manu7121998" #update your preferred password here
+    volumes:
+      - "./etc-pihole:/etc/pihole"
+      - "./etc-dnsmasq.d:/etc/dnsmasq.d"
+    dns:
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+networks:
+  postgres:
+    driver: bridge
+volumes:
+    postgres-db:
+      driver: local
