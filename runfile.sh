@@ -13,5 +13,7 @@ cp -r ~/raspberry-pi/docker ~/docker
 sudo docker run hello-world 
 cd ~/docker/combined
 sudo docker compose up -d
+cd ~/docker/postgres
+sudo docker compose up -d
 sudo rpi-update -y #update firmware in the end
 sudo reboot#reboot
