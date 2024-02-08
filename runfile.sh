@@ -8,8 +8,7 @@ sudo apt clean -y
 curl -sSL https://get.docker.com 67 | sh #install docker
 sudo usermod -aG docker sniperx07 #enable docker for sniperx07
 sudo systemctl enable docker
-cd ~
-cp -r ~/raspberry-pi/docker ~/docker
+sudo cp -r ~/raspberry-pi/docker/ ~/docker
 sudo docker run hello-world 
 cd ~/docker/combined
 sudo docker compose up -d
