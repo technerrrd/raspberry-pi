@@ -1,6 +1,4 @@
-version: "3.8"
 services:
-#    maria-DB
   mariadb:
     image: mariadb:latest
     container_name: mariadb
@@ -17,6 +15,7 @@ services:
     networks:
       private_network:
         ipv4_address: 10.2.0.5
+
   nextcloud:
     container_name: nextcloud
     image: nextcloud:latest
@@ -33,12 +32,13 @@ services:
     networks:
       private_network:
         ipv4_address: 10.2.0.4 # Your NextCloud instance would be located here after connected to WireGuard
+
   wg-easy:
     depends_on: [pihole]
     image: weejewel/wg-easy
     container_name: wg-easy
     environment:
-      - WG_HOST=192.169.1.5 # ⚠️ Change this to your public IP or server's hostname
+      - WG_HOST=192.168.1.5 # ⚠️ Change this to your public IP or server's hostname
       - WG_PORT=51820 # Forward this port so that it is accessible in different network
       - WG_DEFAULT_DNS=10.2.0.100,10.2.0.100 # The DNS 10.2.0.100 to connect with Pi-Hole
       - PASSWORD=manu7121998 # ⚠️ Change this password to access the web UI
@@ -57,54 +57,31 @@ services:
     networks:
       private_network:
         ipv4_address: 10.2.0.3
-  postgres:
-    container_name: postgres_container
-    image: postgres
-    environment:
-      POSTGRES_USER: sqluser
-      POSTGRES_PASSWORD: manu7121998
-      PGDATA: /data/postgres
-    volumes:
-       - postgres-db:/data/postgres
-    ports:
-      - "5432:5432"
-    networks:
-      - postgres
-    restart: unless-stopped
+
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
     restart: unless-stopped
     hostname: pihole
     dns:
-      - 127.0.0.1
+      - 127.0.0.1  
     environment:
-      - ServerIP: "10.2.0.100"
-      - TZ: "Asia/Kolkata" #add timezone here
-      - WEBPASSWORD: "manu7121998" #update your preferred password here
+      - TZ=Europe/London
+      - WEBPASSWORD=CHANGE_THIS_PASSWORD4 # ⚠️ Change this - Can be left blank but not recommended.
+      - ServerIP=10.2.0.100 # Internal IP of pihole
     volumes:
-      - "./etc-pihole:/etc/pihole"
-      - "./etc-dnsmasq.d:/etc/dnsmasq.d"
+      - "./etc-pihole/:/etc/pihole/"
+      - "./etc-dnsmasq.d/:/etc/dnsmasq.d/"
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      #- "67:67/udp"  # Required only for using Pi-hole as a DHCP server
-      - "8001:80/tcp" #pihole admin dashboard
-    cap_add:
-      - NET_ADMIN
+      - "5353:80/tcp" # This is for accessing your Pi-Hole admin server (10.2.0.100/admin)
     networks:
       private_network:
         ipv4_address: 10.2.0.100
-    
-    
 networks:
   private_network:
     ipam:
       driver: default
       config:
         - subnet: 10.2.0.0/24
-  postgres:
-    driver: bridge
-volumes:
-    postgres-db:
-      driver: local
