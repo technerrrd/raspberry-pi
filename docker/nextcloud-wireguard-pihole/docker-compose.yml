@@ -10,7 +10,7 @@ services:
       - MYSQL_PASSWORD=manu7121998 # Change this password
     restart: unless-stopped
     ports:
-      - 3306:3306
+      - 3336:3306
     volumes:
       - "./mariadb:/config"
     networks:
