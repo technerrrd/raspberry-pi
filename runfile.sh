@@ -7,6 +7,7 @@ sudo apt-get update -y #packages update
 sudo apt-get upgrade -y #packages upgrade
 sudo apt dist-upgrade -y
 sudo apt clean -y
+sudo chmod -R 0750 /mount/sandisk
 chown -R www-data:www-data /mount/sandisk
 curl -sSL https://get.docker.com 67 | sh #install docker
 sudo usermod -aG docker $username #enable docker for sniperx07
